@@ -84,11 +84,6 @@ class WP_reCaptcha {
 	 */
 	function plugins_loaded() {
 		if ( $this->has_api_key() ) {
-			// NinjaForms support
-			// check if ninja forms is present
-			if ( class_exists('Ninja_Forms') || function_exists('ninja_forms_register_field') )
-				WP_reCaptcha_NinjaForms::instance();
-
 			// CF7 support
 			// check if contact form 7 forms is present
 			if ( function_exists('wpcf7') )

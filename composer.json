@@ -1,5 +1,5 @@
 {
-    "name": "mcguffin/wp-recaptcha-integration",
+    "name": "devgeniem/wp-recaptcha-integration",
     "type": "wordpress-plugin",
     "license": "GPLv2",
     "description": "WordPress reCaptcha integration supporting Ninja Forms and Contact Form 7",
