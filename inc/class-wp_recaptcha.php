@@ -23,8 +23,9 @@ class WP_reCaptcha {
 	 *	@return WP_reCaptcha
 	 */
 	public static function instance(){
-		if ( is_null( self::$_instance ) )
+		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
+		}
 		return self::$_instance;
 	}
 
@@ -86,16 +87,19 @@ class WP_reCaptcha {
 		if ( $this->has_api_key() ) {
 			// CF7 support
 			// check if contact form 7 forms is present
-			if ( function_exists('wpcf7') )
+			if ( function_exists('wpcf7') ) {
 				WP_reCaptcha_ContactForm7::instance();
+			}
 
 			// WooCommerce support
 			// check if woocommerce is present
-			if ( function_exists('WC') || class_exists('WooCommerce') )
+			if ( function_exists('WC') || class_exists('WooCommerce') ) {
 				WP_reCaptcha_WooCommerce::instance();
+			}
 
-			if ( class_exists( 'Awesome_Support' ) )
+			if ( class_exists( 'Awesome_Support' ) ) {
 				WP_reCaptcha_Awesome_Support::instance();
+			}
 
 			if ( class_exists( 'bbPress' ) ) {
 				WP_reCaptcha_bbPress::instance();
@@ -127,10 +131,11 @@ class WP_reCaptcha {
 				// WP 4.2 introduced `comment_form_submit_button` filter
 				// which is much more likely to work
 				global $wp_version;
-				if ( version_compare( $wp_version , '4.2' ) >= 0 && $this->get_option('recaptcha_comment_use_42_filter') )
+				if ( version_compare( $wp_version , '4.2' ) >= 0 && $this->get_option('recaptcha_comment_use_42_filter') ) {
 					add_filter('comment_form_submit_button',array($this,'prepend_recaptcha_html'),10,2);
-				else
+				} else {
 					add_filter('comment_form_defaults',array($this,'comment_form_defaults'),10);
+				}
 
 				//*/
 				add_action('pre_comment_on_post',array($this,'recaptcha_check_or_die'));
@@ -168,8 +173,9 @@ class WP_reCaptcha {
 //*/
 				add_filter( 'lostpassword_recaptcha_html' , array( &$this , 'recaptcha_html' ) );
 			}
-			if ( 'WPLANG' === $this->get_option( 'recaptcha_language' ) )
+			if ( 'WPLANG' === $this->get_option( 'recaptcha_language' ) ) {
 				add_filter( 'wp_recaptcha_language' , array( &$this,'recaptcha_wplang' ) , 5 );
+			}
 
 			add_action( 'recaptcha_print' , array( &$this , 'print_recaptcha_html' ) );
 			add_filter( 'recaptcha_error' , array( &$this , 'wp_error' ) );
@@ -184,8 +190,9 @@ class WP_reCaptcha {
 	 *	@return	object	WP_reCaptcha_Captcha
 	 */
 	public function captcha_instance() {
-		if ( is_null( $this->_captcha_instance ) )
+		if ( is_null( $this->_captcha_instance ) ) {
 			$this->_captcha_instance = $this->captcha_instance_by_flavor( $this->get_option( 'recaptcha_flavor' ) );
+		}
 		return $this->_captcha_instance;
 	}
 
@@ -272,8 +279,9 @@ class WP_reCaptcha {
 					while ( current && current.nodeName != 'BODY' && current.nodeName != 'FORM' ) {
 						current = current.parentNode;
 					}
-					if ( !current || current.nodeName != 'FORM' )
+					if ( !current || current.nodeName != 'FORM' ) {
 						return false;
+					}
 					this.form=current;
 					ui=slice.call(this.form.getElementsByTagName('input')).concat(slice.call(this.form.getElementsByTagName('button')));
 					for (var i = 0; i < ui.length; i++) if ( (type=ui[i].getAttribute('TYPE')) && type=='submit' ) this.submits.push(ui[i]);
@@ -370,8 +378,9 @@ class WP_reCaptcha {
 	 *	@return bool false if check does not validate
 	 */
 	function recaptcha_check( $valid=null ) {
-		if ( $this->is_required() )
+		if ( $this->is_required() ) {
 			return $this->captcha_instance()->check();
+		}
 		return true;
 	}
 
@@ -403,8 +412,9 @@ class WP_reCaptcha {
 	 *	@return WP_Error with captcha error added if test fails.
 	 */
 	function registration_errors( $errors ) {
-		if ( isset( $_POST["user_login"]) )
+		if ( isset( $_POST["user_login"]) ) {
 			$errors = $this->wp_error_add( $errors );
+		}
 		return $errors;
 	}
 
@@ -415,8 +425,9 @@ class WP_reCaptcha {
 	 *	@see filter hook `wpmu_validate_user_signup`
 	 */
 	function wpmu_validate_user_signup( $result ) {
-		if ( isset( $_POST['stage'] ) && $_POST['stage'] == 'validate-user-signup' )
+		if ( isset( $_POST['stage'] ) && $_POST['stage'] == 'validate-user-signup' ){
 			$result['errors'] = $this->wp_error_add( $result['errors'] , 'generic' );
+		}
 		return $result;
 	}
 
@@ -477,8 +488,9 @@ class WP_reCaptcha {
 			case 'recaptcha_publickey': // first try local, then global
 			case 'recaptcha_privatekey':
 				$option_value = get_option($option_name);
-				if ( ! $option_value && WP_reCaptcha::is_network_activated() )
+				if ( ! $option_value && WP_reCaptcha::is_network_activated() ) {
 					$option_value = get_site_option( $option_name );
+				}
 				return $option_value;
 			case 'recaptcha_enable_comments': // global on network. else local
 			case 'recaptcha_enable_signup':
@@ -486,8 +498,9 @@ class WP_reCaptcha {
 			case 'recaptcha_enable_lostpw':
 			case 'recaptcha_disable_for_known_users':
 			case 'recaptcha_enable_wc_order':
-				if ( WP_reCaptcha::is_network_activated() )
+				if ( WP_reCaptcha::is_network_activated() ) {
 					return get_site_option($option_name);
+				}
 				return get_option( $option_name );
 			default: // always local
 				return get_option($option_name);
@@ -525,8 +538,9 @@ class WP_reCaptcha {
 	 *	@return bool
 	 */
 	public function test_public_key( $key = null ) {
-		if ( is_null( $key ) )
+		if ( is_null( $key ) ) {
 			$key = $this->get_option('recaptcha_publickey');
+		}
 		$rec = WP_reCaptcha::instance();
 		$pub_key_url = sprintf( "http://www.google.com/recaptcha/api/challenge?k=%s" , $key );
 		$pub_response = wp_remote_get( $pub_key_url );
@@ -540,8 +554,9 @@ class WP_reCaptcha {
 	 *	@return bool
 	 */
 	public function test_private_key( $key = null ) {
-		if ( is_null( $key ) )
+		if ( is_null( $key ) ) {
 			$key = $this->get_option('recaptcha_privatekey');
+		}
 		$prv_key_url = sprintf( "http://www.google.com/recaptcha/api/verify?privatekey=%s" , $key );
 		$prv_response = wp_remote_get( $prv_key_url );
 		$prv_rspbody = wp_remote_retrieve_body( $prv_response );
@@ -626,10 +641,12 @@ class WP_reCaptcha {
 	 */
 	static function is_network_activated() {
 		if ( is_null(self::$_is_network_activated) ) {
-			if ( ! is_multisite() )
+			if ( ! is_multisite() ){
 				return false;
-			if ( ! function_exists( 'is_plugin_active_for_network' ) )
+			}
+			if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
 				require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+			}
 
 			self::$_is_network_activated = is_plugin_active_for_network( basename(dirname(__FILE__)).'/'.basename(__FILE__) );
 		}

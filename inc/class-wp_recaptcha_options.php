@@ -16,8 +16,9 @@ class WP_reCaptcha_Options {
 	 *	@return WP_reCaptcha_Options The options manager instance
 	 */
 	public static function instance(){
-		if ( is_null( self::$_instance ) )
+		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
+		}
 		return self::$_instance;
 	}
 
@@ -65,15 +66,17 @@ class WP_reCaptcha_Options {
 				'recaptcha_noscript' => 'intval',
 				'recaptcha_comment_use_42_filter' => 'intval',
 			);
-			if ( array_intersect( array_keys( $_POST ) , array_keys( $opts ) ) )
+			if ( array_intersect( array_keys( $_POST ) , array_keys( $opts ) ) ) {
 				check_admin_referer( 'recaptcha-network-settings' );
+			}
 
 			$updated = false;
 			foreach ( $opts as $option_name => $sanitize_cb ) {
 				if ( isset( $_POST[ $option_name ] ) ) {
 					$option_value = sanitize_text_field( $_POST[ $option_name ] );
-					if ( is_callable($sanitize_cb) )
+					if ( is_callable($sanitize_cb) ) {
 						$option_value = call_user_func($sanitize_cb,$_POST[$option_name]);
+					}
 					update_site_option( $option_name , $option_value );
 					$updated = true;
 				}
@@ -136,8 +139,9 @@ class WP_reCaptcha_Options {
 	 */
 	function add_option_recaptcha_apikey( $option , $value ){
 		delete_transient('recaptcha_keys_okay');
-		if ( in_array( $option , array('recaptcha_publickey','recaptcha_privatekey') ) )
+		if ( in_array( $option , array('recaptcha_publickey','recaptcha_privatekey') ) ) {
 			add_filter( 'wp_redirect' , array( &$this , 'remove_new_apikey_url' ) );
+		}
 	}
 
 	/**
@@ -351,8 +355,9 @@ class WP_reCaptcha_Options {
 				);
 			}
 
-			if ( ! WP_reCaptcha::instance()->get_option( 'recaptcha_publickey' ) || ! WP_reCaptcha::instance()->get_option( 'recaptcha_privatekey' ) )
+			if ( ! WP_reCaptcha::instance()->get_option( 'recaptcha_publickey' ) || ! WP_reCaptcha::instance()->get_option( 'recaptcha_privatekey' ) ) {
 				add_settings_error('recaptcha',1,__('Please configure the public and private key. <a href="http://www.google.com/recaptcha/whyrecaptcha">What are you trying to tell me?</a>','wp-recaptcha-integration'),'updated');
+			}
 		}
 	}
 
@@ -684,11 +689,13 @@ class WP_reCaptcha_Options {
 	public function sanitize_language( $language ) {
 		$flavor = isset($_REQUEST['recaptcha_flavor']) ? $_REQUEST['recaptcha_flavor'] : WP_reCaptcha::instance()->get_option('recaptcha_flavor');
 
-		if ( isset( $language[$flavor] ) )
+		if ( isset( $language[$flavor] ) ) {
 			$language = $language[$flavor];
+		}
 
-		if ( $language != 'WPLANG' )
+		if ( $language != 'WPLANG' ) {
 			$language = WP_reCaptcha::instance()->captcha_instance_by_flavor( $flavor )->get_language( $language );
+		}
 		return $language;
 	}
 	/**
@@ -701,10 +708,11 @@ class WP_reCaptcha_Options {
 		);
 		$flavor = WP_reCaptcha::instance()->get_option('recaptcha_flavor');
 
-		if ( isset($themes_available[$flavor] ) && in_array($theme,$themes_available[$flavor]) )
+		if ( isset($themes_available[$flavor] ) && in_array($theme,$themes_available[$flavor]) ) {
 			return $theme;
-		else if ( isset($themes_available[$flavor] ) )
+		} else if ( isset($themes_available[$flavor] ) ) {
 			return $themes_available[$flavor][0];
+		}
 		return 'light';
 	}
 
@@ -712,8 +720,9 @@ class WP_reCaptcha_Options {
 	 *	Check valid flavor
 	 */
 	public function sanitize_flavor( $flavor ) {
-		if ( in_array($flavor,array('recaptcha','grecaptcha')) )
+		if ( in_array($flavor,array('recaptcha','grecaptcha')) ) {
 			return $flavor;
+		}
 		return 'grecaptcha';
 	}
 

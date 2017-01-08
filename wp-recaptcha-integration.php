@@ -32,8 +32,9 @@ Text Domain: wp-recaptcha-integration
  */
 function wp_recaptcha_integration_autoload( $classname ) {
 	$class_path = dirname(__FILE__). sprintf('/inc/class-%s.php' , strtolower( $classname ) ) ;
-	if ( file_exists($class_path) )
+	if ( file_exists($class_path) ) {
 		require_once $class_path;
+	}
 }
 spl_autoload_register( 'wp_recaptcha_integration_autoload' );
 
@@ -54,5 +55,6 @@ add_filter('site_transient_update_plugins', 'wp_recaptcha_disable_updates');
 WP_reCaptcha::instance();
 
 
-if ( is_admin() )
+if ( is_admin() ) {
 	WP_reCaptcha_Options::instance();
+}

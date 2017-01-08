@@ -33,8 +33,9 @@ class WP_reCaptcha_ReCaptcha extends WP_reCaptcha_Captcha {
 	 *	@return WP_reCaptcha_Options The options manager instance
 	 */
 	public static function instance(){
-		if ( is_null( self::$_instance ) )
+		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
+		}
 		return self::$_instance;
 	}
 
@@ -47,8 +48,9 @@ class WP_reCaptcha_ReCaptcha extends WP_reCaptcha_Captcha {
 	 *	Prevent from creating more than one instance
 	 */
 	private function __construct() {
-		if ( ! function_exists( 'recaptcha_get_html' ) )
+		if ( ! function_exists( 'recaptcha_get_html' ) ) {
 			require_once dirname(__FILE__).'/recaptchalib.php';
+		}
 	}
 	
 	/**
@@ -141,10 +143,11 @@ class WP_reCaptcha_ReCaptcha extends WP_reCaptcha_Captcha {
 		$public_key = WP_reCaptcha::instance()->get_option( 'recaptcha_publickey' );
 		$recaptcha_theme = WP_reCaptcha::instance()->get_option('recaptcha_theme');
 
-		if ($recaptcha_theme == 'custom') 
+		if ($recaptcha_theme == 'custom') {
 			$return = $this->get_custom_html( $public_key );
-		else
+		} else {
 			$return = recaptcha_get_html( $public_key, $this->last_error );
+		}
 		if ( WP_reCaptcha::instance()->get_option( 'recaptcha_disable_submit' ) ) {
 			$return .= '<span id="wp-recaptcha-integration-marker"></span>';
 		}
@@ -161,8 +164,9 @@ class WP_reCaptcha_ReCaptcha extends WP_reCaptcha_Captcha {
 				$_POST["recaptcha_challenge_field"],
 				$_POST["recaptcha_response_field"]);
 
-			if ( ! $this->_last_result->is_valid )
+			if ( ! $this->_last_result->is_valid ) {
 				$this->last_error = $this->_last_result->error;
+			}
 		}
 		do_action( 'wp_recaptcha_checked' , $this->_last_result->is_valid );
 		return $this->_last_result->is_valid;

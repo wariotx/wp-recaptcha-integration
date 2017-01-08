@@ -18,8 +18,9 @@ class WP_reCaptcha_Awesome_Support {
 	 *	@return WP_reCaptcha
 	 */
 	public static function instance(){
-		if ( is_null( self::$_instance ) )
+		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
+		}
 		return self::$_instance;
 	}
 

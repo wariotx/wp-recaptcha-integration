@@ -68,14 +68,14 @@ abstract class WP_reCaptcha_Captcha {
 		$lang = str_replace( '_' , '-' , $lang );
 		
 		// direct hit: return it.
-		if ( isset($this->supported_languages[$lang]) )
+		if ( isset($this->supported_languages[$lang]) ) {
 			return $lang;
-		
+		}
 		// remove countrycode, try again
 		$lang = preg_replace('/-(.*)$/','',$lang);
-		if ( isset($this->supported_languages[$lang]) )
+		if ( isset($this->supported_languages[$lang]) ) {
 			return $lang;
-		
+		}
 		// lang does not exist.
 		return '';
 	}

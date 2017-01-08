@@ -15,8 +15,9 @@ class WP_reCaptcha_WooCommerce {
 	 *	@return WP_reCaptcha
 	 */
 	public static function instance(){
-		if ( is_null( self::$_instance ) )
+		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
+		}
 		return self::$_instance;
 	}
 
@@ -60,8 +61,9 @@ class WP_reCaptcha_WooCommerce {
 				if ( $enable_signup ) {
 					// displaying the captcha at hook 'registration_form' already done by core plugin
 					add_filter('woocommerce_registration_errors', array( &$this , 'login_errors' ) , 10 , 3 );
-// 					if ( ! $enable_order )
+// 					if ( ! $enable_order ) {
 // 						add_filter('woocommerce_checkout_fields', array( &$this , 'checkout_fields' ) , 10 , 3 );
+// 					}
 				}
 				add_filter('woocommerce_form_field_recaptcha', array( $wp_recaptcha , 'recaptcha_html' ) , 10 , 3 );
 				/*
@@ -87,8 +89,9 @@ class WP_reCaptcha_WooCommerce {
 	 *	hooks into action `woocommerce_checkout_process`
 	 */
 	function recaptcha_check() {
-		if ( ! WP_reCaptcha::instance()->recaptcha_check() ) 
+		if ( ! WP_reCaptcha::instance()->recaptcha_check() ) {
 			wc_add_notice( __("<strong>Error:</strong> the Captcha didn’t verify.",'wp-recaptcha-integration'), 'error' );
+		}
 	}
 	
 	/**
@@ -96,8 +99,9 @@ class WP_reCaptcha_WooCommerce {
 	 *	hooks into actions `woocommerce_process_login_errors` and `woocommerce_registration_errors`
 	 */
 	function login_errors( $validation_error ) {
-		if ( ! WP_reCaptcha::instance()->recaptcha_check() ) 
+		if ( ! WP_reCaptcha::instance()->recaptcha_check() ) {
 			$validation_error->add( 'captcha_error' ,  __("<strong>Error:</strong> the Captcha didn’t verify.",'wp-recaptcha-integration') );
+		}
 		return $validation_error;
 	}
 	
@@ -106,8 +110,9 @@ class WP_reCaptcha_WooCommerce {
 	 *	hooks into actions `woocommerce_process_login_errors` and `woocommerce_registration_errors`
 	 */
 	function disable_on_checkout( $enabled ) {
-		if ( defined( 'WOOCOMMERCE_CHECKOUT' ) )
+		if ( defined( 'WOOCOMMERCE_CHECKOUT' ) ) {
 			return false;
+		}
 		return $enabled;
 	}
 }

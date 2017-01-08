@@ -15,8 +15,9 @@ class WP_reCaptcha_ContactForm7 {
 	 *	@return WP_reCaptcha
 	 */
 	public static function instance(){
-		if ( is_null( self::$_instance ) )
+		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
+		}
 		return self::$_instance;
 	}
 
@@ -63,15 +64,18 @@ class WP_reCaptcha_ContactForm7 {
 
 
 	function recaptcha_shortcode_handler( $tag ) {
-		if ( ! WP_reCaptcha::instance()->is_required() )
+		if ( ! WP_reCaptcha::instance()->is_required() ) {
 			return apply_filters( 'wp_recaptcha_disabled_html' ,'');
+		}
 		$tag = new WPCF7_Shortcode( $tag );
-		if ( empty( $tag->name ) )
+		if ( empty( $tag->name ) ) {
 			return '';
+		}
 
 		$atts = null;
-		if ( $theme = $tag->get_option('theme','',true) )
+		if ( $theme = $tag->get_option('theme','',true) ) {
 			$atts = array( 'data-theme' => $theme );
+		}
 
 		$recaptcha_html = WP_reCaptcha::instance()->recaptcha_html( $atts );
 		$validation_error = wpcf7_get_validation_error( $tag->name );
@@ -92,8 +96,9 @@ class WP_reCaptcha_ContactForm7 {
 
 
 	function add_tag_generator_recaptcha() {
-		if ( ! function_exists( 'wpcf7_add_tag_generator' ) )
+		if ( ! function_exists( 'wpcf7_add_tag_generator' ) ) {
 			return;
+		}
 		wpcf7_add_tag_generator( 'recaptcha', __( 'reCAPTCHA', 'wp-recaptcha-integration' ),
 			'wpcf7-tg-pane-recaptcha', array(&$this,'recaptcha_settings_callback') );
 	}
@@ -213,17 +218,18 @@ class WP_reCaptcha_ContactForm7 {
 	}
 
 	function recaptcha_validation_filter( $result, $tag ) {
-		if ( ! WP_reCaptcha::instance()->is_required() )
+		if ( ! WP_reCaptcha::instance()->is_required() ) {
 			return $result;
+		}
 
 		$tag = new WPCF7_Shortcode( $tag );
 		$name = $tag->name;
 
 		if ( ! WP_reCaptcha::instance()->recaptcha_check() ) {
 			$message = wpcf7_get_message( 'wp_recaptcha_invalid' );
-			if ( ! $message ) 
+			if ( ! $message ) {
 				$message = __("The Captcha didn’t verify.",'wp-recaptcha-integration');
-			 
+			}
 			if ( method_exists($result, 'invalidate' ) ) { // since CF7 4.1
 				$result->invalidate( $tag , $message );
 			} else {
