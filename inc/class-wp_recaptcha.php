@@ -591,7 +591,8 @@ class WP_reCaptcha {
 			delete_site_option( 'recaptcha_disable_for_known_users' );
 			delete_site_option( 'recaptcha_lockout' );
 
-			foreach ( wp_get_sites() as $site) {
+			$sites = ( function_exists( 'get_sites' ) ) ? get_sites() : wp_get_sites();
+			foreach ( $sites as $site ) {
 				switch_to_blog( $site["blog_id"] );
 				delete_option( 'recaptcha_publickey' );
 				delete_option( 'recaptcha_privatekey' );
