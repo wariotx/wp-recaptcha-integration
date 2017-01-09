@@ -25,6 +25,8 @@ Text Domain: wp-recaptcha-integration
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+define( 'WPRI__PLUGIN_DIR' , plugin_dir_path( __FILE__ ) );
+define( 'WPRI__PLUGIN_NAME' , 'wp-recaptcha-integration' );
 /**
  * Autoload WPAA Classes
  *
